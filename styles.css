@@ -23,4 +23,11 @@ main {
     width: 38%;
     height: 50%;
     align-self: center;
+    border: 1px solid black;
 }
+
+.casilla {
+    border: 1px solid black;
+    font-size: 3rem;
+}
+

@@ -150,38 +150,35 @@ function GameFlow() {
 
 const game = GameFlow();
 
-//for (let i = 0; i < 9; i++) {
-//    let x = prompt("select x place");
-//    let y = prompt("select y place");
-//
-//    let elpepe = game.PlayRound(y, x, i)
-//    if (!elpepe && elpepe != 2) {
-//        i--;
-//        alert("That place is already taken!");
-//    }
-//    else if (elpepe == 2) {
-//        break
-//    }
-//    console.log(i)
-//}
-
-
 //* DOM ------------------------------------------------------------------------------------------------
-
 const DOMcontrol = (function () {
     const tablero = document.querySelector(".tablero");
-    const dialog = document.querySelector(".winner")
-
-    tablero.addEventListener("click", (casilla) => {
-        casilla.target.textContent = game.getCurrentPlayer().sign;
-    })
+    const dialog = document.querySelector(".winner");
+    let i = 0;
     
     tablero.addEventListener("click", (casilla) => {
         const domRow = casilla.target.dataset.row;
         const domCol = casilla.target.dataset.col;
-        let winner = game.PlayRound(domRow, domCol);
+        let currentP = game.getCurrentPlayer().sign;
 
-        if (winner === 2) {
+        let winner = game.PlayRound(domRow, domCol);
+        switch (winner) {
+            case true:
+                casilla.target.textContent = currentP;
+                i++;
+                break;
+            case 2:
+                casilla.target.textContent = currentP;
+                dialog.showModal();
+                break;
+            case false:
+                alert("ocupao");
+                break;
+            default:
+                break;
+        }
+        if (i === 9) {
+            dialog.textContent = "Demonios chabos"
             dialog.showModal();
         }
     })
