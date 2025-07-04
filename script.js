@@ -84,7 +84,9 @@ function GameFlow() {
     const checkWin = () => {
         const actuallBoard = board.getBoard();
         let cPlayer = getCurrentPlayer()
+        
         let hasWinningRow = actuallBoard.some(row => row.every(cell => cell.getValue() === cPlayer.sign)); //!
+
         if (hasWinningRow)
             return hasWinningRow;
         
@@ -127,6 +129,12 @@ function GameFlow() {
         if (!isAvaliable)
             return false;
 
+        if (checkWin()) {
+            console.log(`${getCurrentPlayer().name} has won!`);
+            board.printBoard();
+            return 2;
+        }
+
         PlayersTurn();
         printNewRound();
         return true;
@@ -142,7 +150,6 @@ function GameFlow() {
 
 const game = GameFlow();
 
-//
 //for (let i = 0; i < 9; i++) {
 //    let x = prompt("select x place");
 //    let y = prompt("select y place");
@@ -160,25 +167,23 @@ const game = GameFlow();
 
 
 //* DOM ------------------------------------------------------------------------------------------------
-// casilla.target.dataset.col, casilla.target.dataset.row
 
 const DOMcontrol = (function () {
     const tablero = document.querySelector(".tablero");
     const dialog = document.querySelector(".winner")
 
-    tablero.addEventListener("click", casilla => {
-        const winner = game.checkWin();
-        console.log(winner)
-        if (winner) {
-            dialog.showModal();
-        }
+    tablero.addEventListener("click", (casilla) => {
+        casilla.target.textContent = game.getCurrentPlayer().sign;
     })
-
+    
     tablero.addEventListener("click", (casilla) => {
         const domRow = casilla.target.dataset.row;
         const domCol = casilla.target.dataset.col;
-        game.PlayRound(domRow, domCol);
-    })
+        let winner = game.PlayRound(domRow, domCol);
 
+        if (winner === 2) {
+            dialog.showModal();
+        }
+    })
 }) ();
 
