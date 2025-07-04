@@ -1,3 +1,4 @@
+//? CODIGO SEMI-COPIADO / BASADO EN OTRO DE UN JUEGO SIMILAR
 function Cell() {
     let value = 0;
 
@@ -41,7 +42,7 @@ function GameBoard() {
 
     const printBoard = () => {
         const cellValues = arrGameBoard.map((row) => row.map((cell) => cell.getValue()));
-        console.log(cellValues);
+        //console.log(cellValues);
     };
 
     return {
@@ -77,10 +78,10 @@ function GameFlow() {
 
     const printNewRound = () => {
         board.printBoard();
-        console.log(`it's ${getCurrentPlayer().name}'s turn:`)
+        //console.log(`it's ${getCurrentPlayer().name}'s turn:`)
     };
 
-    //!
+    //? CHECKWIN CREADO POR MI + GUIA / TUICION POR AI
     const checkWin = () => {
         const actuallBoard = board.getBoard();
         let cPlayer = getCurrentPlayer()
@@ -123,14 +124,14 @@ function GameFlow() {
     }
 
     const PlayRound = (row, col) => {
-        console.log(`${getCurrentPlayer().name} selected ${row}, ${col}`);
+        //console.log(`${getCurrentPlayer().name} selected ${row}, ${col}`);
         const isAvaliable = board.playerMove(row, col, getCurrentPlayer().sign);
 
         if (!isAvaliable)
             return false;
 
         if (checkWin()) {
-            console.log(`${getCurrentPlayer().name} has won!`);
+            //console.log(`${getCurrentPlayer().name} has won!`);
             board.printBoard();
             return 2;
         }
@@ -149,38 +150,75 @@ function GameFlow() {
 }
 
 const game = GameFlow();
-
+//? SECCION DEL DOM CREADA POR MI + GUIA/TUICION POR AI
 //* DOM ------------------------------------------------------------------------------------------------
 const DOMcontrol = (function () {
     const tablero = document.querySelector(".tablero");
-    const dialog = document.querySelector(".winner");
+    const dialogAdvice = document.querySelector(".advice");
+    const dialogWinner = document.querySelector(".winner");
     let i = 0;
     
-    tablero.addEventListener("click", (casilla) => {
-        const domRow = casilla.target.dataset.row;
-        const domCol = casilla.target.dataset.col;
-        let currentP = game.getCurrentPlayer().sign;
+    const ShowDialog = (message, val) => {
+        if (val === false) {
+            dialogAdvice.innerHTML = `<h1 class="elpepe">${message}</h1>`;
+            dialogAdvice.showModal();
+        }
+        else if(val === 2 || val === 9) {
+            dialogWinner.innerHTML = 
+            `<h1 class="elpepe">${message}</h1>
+            <button class="closeDialog">Reset</button>`;
 
-        let winner = game.PlayRound(domRow, domCol);
-        switch (winner) {
+            const dialogClose = document.querySelector(".closeDialog");
+            
+            dialogClose.addEventListener("click", () => location.reload());
+            dialogWinner.showModal();
+        }
+    };
+
+    const XOchanges = (casilla, sign) => {
+        if (sign === "X") {
+            casilla.classList.add("x")
+            casilla.innerHTML = `${sign}`;
+        }
+        else if (sign === "O")
+            casilla.classList.add("o")
+            casilla.innerHTML = `${sign}`;
+    }
+
+    const handleClick = (evento) => {
+        const casilla = evento.target;
+        const domRow = casilla.dataset.row;
+        const domCol = casilla.dataset.col;
+        let currentPlayerSign = game.getCurrentPlayer().sign;
+        let currentPlayerName = game.getCurrentPlayer().name;
+
+        let result = game.PlayRound(domRow, domCol);
+
+        switch (result) {
             case true:
-                casilla.target.textContent = currentP;
+                XOchanges(casilla, currentPlayerSign);
                 i++;
                 break;
             case 2:
-                casilla.target.textContent = currentP;
-                dialog.showModal();
+                XOchanges(casilla, currentPlayerSign);
+                ShowDialog(`Gano ${currentPlayerName}`, result);
                 break;
             case false:
-                alert("ocupao");
+                ShowDialog(`Casilla ocupada`, result);
                 break;
             default:
                 break;
         }
-        if (i === 9) {
-            dialog.textContent = "Demonios chabos"
-            dialog.showModal();
+        if (i == 9) {
+            ShowDialog(`Tie!`, i);
         }
+    };
+
+    tablero.addEventListener("click", handleClick);
+    dialogAdvice.addEventListener ("click", (e) => {
+        if (e.target === dialogAdvice)
+            dialogAdvice.close();
     })
+
 }) ();
 

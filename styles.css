@@ -13,6 +13,17 @@ main {
     justify-content: center;
     align-content: center;
     margin: auto;
+    font-family: sans-serif;
+}
+
+dialog {
+    border: 2px solid black;
+    border-radius: 1rem;
+}
+
+p {
+    margin: 0;
+    padding: 0;
 }
 
 .tablero {
@@ -23,7 +34,6 @@ main {
     width: 38%;
     height: 50%;
     align-self: center;
-    border: 1px solid black;
 }
 
 .casilla {
@@ -31,3 +41,26 @@ main {
     font-size: 3rem;
 }
 
+.closeDialog {
+    width: fit-content;
+    height: 30px;
+    padding: 0 1rem;
+    background-color: #00000080;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+}
+
+::backdrop {
+    background-color:  #00000058;
+}
+
+.x {
+    color: red;
+    font-weight: bold;
+}
+
+.o {
+    color: blue;
+    font-weight: bold;
+}
